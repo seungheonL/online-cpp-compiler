@@ -43,7 +43,7 @@ function App() {
               <textarea
                 style={{
                   backgroundColor: '#212121',
-                  color: 'white',
+                  color: '#A4A4A4',
                 }}
                 rows="30"
                 class="form-control"
@@ -70,7 +70,7 @@ function App() {
             <textarea
               style={{
                 backgroundColor: '#212121',
-                color: 'white',
+                color: '#A4A4A4',
               }}
               rows="30"
               class="form-control"
