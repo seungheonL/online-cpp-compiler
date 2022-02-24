@@ -25,28 +25,50 @@ function App() {
   };
 
   return (
-    <div className="container">
+    <>
+      <h1
+        style={{ textAlign: 'center', marginBottom: '30px', marginTop: '30px' }}
+      >
+        Welcome to online C/C++ compiler
+      </h1>
+      <div
+        className="row"
+        style={{
+          textAlign: 'center',
+        }}
+      >
+        <div className="col">
+          <h2>source code</h2>
+        </div>
+        <div className="col">
+          <h2>result</h2>
+        </div>
+      </div>
       <div className="row">
         <div
-          class="col-sm"
+          className="col-2"
           style={{
-            marginTop: '15px',
+            float: 'none',
+            margin: '0 auto',
           }}
         >
           <form onSubmit={onCodeSubmit}>
             <div
-              className="form-group w-100"
+              className="form-group"
               style={{
                 marginBottom: '15px',
+                marginTop: '15px',
               }}
             >
               <textarea
+                spellcheck="false"
                 style={{
+                  width: '300%',
                   backgroundColor: '#212121',
                   color: '#A4A4A4',
                   fontFamily: 'consolas',
                 }}
-                rows="30"
+                rows="40"
                 className="form-control"
                 onChange={onCodeChange}
                 name="code"
@@ -61,27 +83,31 @@ function App() {
           </form>
         </div>
 
-        <div className="col-sm">
-          <div
-            className="form-group w-100"
-            style={{
-              marginTop: '15px',
-            }}
-          >
+        <div
+          className="col-2"
+          style={{
+            float: 'none',
+            margin: '0 auto',
+            marginTop: '15px',
+          }}
+        >
+          <div className="form-group">
             <textarea
+              spellcheck="false"
+              rows="40"
               style={{
+                width: '180%',
                 backgroundColor: '#212121',
                 color: '#A4A4A4',
                 fontFamily: 'consolas',
               }}
-              rows="30"
               className="form-control"
               value={result}
             ></textarea>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
