@@ -25,8 +25,8 @@ function App() {
   };
 
   return (
-    <div class="container">
-      <div class="row">
+    <div className="container">
+      <div className="row">
         <div
           class="col-sm"
           style={{
@@ -35,7 +35,7 @@ function App() {
         >
           <form onSubmit={onCodeSubmit}>
             <div
-              class="form-group w-100"
+              className="form-group w-100"
               style={{
                 marginBottom: '15px',
               }}
@@ -44,25 +44,26 @@ function App() {
                 style={{
                   backgroundColor: '#212121',
                   color: '#A4A4A4',
+                  fontFamily: 'consolas',
                 }}
                 rows="30"
-                class="form-control"
+                className="form-control"
                 onChange={onCodeChange}
                 name="code"
                 value={code}
               ></textarea>
             </div>
-            <div class="form-group">
-              <button class="btn btn-primary" type="submit">
+            <div className="form-group">
+              <button className="btn btn-primary" type="submit">
                 compile
               </button>
             </div>
           </form>
         </div>
 
-        <div class="col-sm">
+        <div className="col-sm">
           <div
-            class="form-group w-100"
+            className="form-group w-100"
             style={{
               marginTop: '15px',
             }}
@@ -71,9 +72,10 @@ function App() {
               style={{
                 backgroundColor: '#212121',
                 color: '#A4A4A4',
+                fontFamily: 'consolas',
               }}
               rows="30"
-              class="form-control"
+              className="form-control"
               value={result}
             ></textarea>
           </div>
