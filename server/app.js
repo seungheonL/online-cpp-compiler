@@ -22,6 +22,18 @@ app.use(express.json());
 app.use(morgan('tiny'));
 app.use(express.urlencoded({ extended: false }));
 
+const createExeFile = () => {
+  return new Promise((resolve, reject) => {
+    exec('g++ main.cpp', (err, stdout, stderr) => {
+      if (!err) {
+        resolve();
+      } else {
+        reject(stderr);
+      }
+    });
+  });
+};
+
 app.post('/compile', async (req, res) => {
   const code = req.body.code;
 
@@ -30,18 +42,6 @@ app.post('/compile', async (req, res) => {
       console.log(err);
     }
   });
-
-  const createExeFile = () => {
-    return new Promise((resolve, reject) => {
-      exec('g++ main.cpp', (err, stdout, stderr) => {
-        if (!err) {
-          resolve();
-        } else {
-          reject(stderr);
-        }
-      });
-    });
-  };
 
   createExeFile()
     .then(() => {
