@@ -3,11 +3,11 @@ import CodeEditor from './CodeEditor';
 import Output from './Output';
 import Title from './Title';
 
-const Home = () => {
+const Home = ({ user }) => {
   const [result, setResult] = useState('');
   return (
     <>
-      <Title />
+      <Title user={user} />
       <div
         className="row"
         style={{

@@ -52,6 +52,24 @@ let users = [
   },
 ];
 
+app.get('/auth', (req, res) => {
+  const token = req.header('Authorization');
+  console.log(token);
+
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
+    res.json({ email: decoded.email });
+  } catch {
+    res.json({ message: 'invalid token' });
+  }
+
+  // if (decoded) {
+  //   res.json({ email: decoded.email });
+  // } else {
+  //   res.json({ message: 'invalid token' });
+  // }
+});
+
 app.post('/login', async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -75,6 +93,7 @@ app.post('/login', async (req, res) => {
         {
           type: 'JWT',
           email: user.email,
+          createdAt: new Date(),
         },
         SECRET_KEY,
         {
@@ -87,7 +106,9 @@ app.post('/login', async (req, res) => {
       const decoded = jwt.verify(token, SECRET_KEY);
       console.log(decoded);
 
-      res.json({ token });
+      console.log(decoded.email);
+
+      res.json({ token, userEmail: decoded.email });
     } else {
       console.log('wrong password');
       res.json({ message: 'wrong password' });

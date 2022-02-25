@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const SignInForm = ({ setIsLoggedIn }) => {
+const SignInForm = ({ setIsLoggedIn, setUser }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -26,9 +26,12 @@ const SignInForm = ({ setIsLoggedIn }) => {
       },
     });
 
-    const { token } = await res.json();
+    const { token, userEmail } = await res.json();
+
     if (token) {
-      localStorage.setItem('token', token);
+      console.log(userEmail);
+      localStorage.setItem('login-token', token);
+      setUser({ email: userEmail });
       setIsLoggedIn(true);
     }
   };
