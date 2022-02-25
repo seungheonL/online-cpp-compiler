@@ -4,6 +4,13 @@ import morgan from 'morgan';
 import cors from 'cors';
 import child_process from 'child_process';
 import fs from 'fs';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+
+import dotenv from 'dotenv';
+dotenv.config();
+
+const SECRET_KEY = process.env.SECRET_KEY;
 
 const app = express();
 const exec = child_process.exec;
@@ -33,6 +40,60 @@ const createExeFile = () => {
     });
   });
 };
+
+let users = [
+  {
+    email: '1234@naver.com',
+    password: '$2b$10$0l5srYUyerNIQp74OVUgGOEodLzuy8YQfDH9JN68N5rceZ6ijxDEa', //1234를 hash한 결과
+  },
+  {
+    email: '5678@naver.com',
+    password: '$2b$10$2L/F3KYN6PGCTrIuKbzWmOVHUHFz.NxAOIn2cyfu0aojyVTTxQFcm', //5678을 hash한 결과
+  },
+];
+
+app.post('/login', async (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+
+  // 회원가입 할때 사용
+  // const saltRounds = 10;
+  // const encrypted = await bcrypt.hash(password, saltRounds);
+
+  const user = users.find((user) => user.email == email);
+
+  if (!user) {
+    console.log('wrong email');
+    res.json({ message: 'wrong email' });
+  } else {
+    const found = await bcrypt.compare(password, user.password);
+
+    if (found) {
+      console.log('login success');
+
+      const token = jwt.sign(
+        {
+          type: 'JWT',
+          email: user.email,
+        },
+        SECRET_KEY,
+        {
+          expiresIn: '15m',
+        }
+      );
+
+      console.log(token);
+
+      const decoded = jwt.verify(token, SECRET_KEY);
+      console.log(decoded);
+
+      res.json({ token });
+    } else {
+      console.log('wrong password');
+      res.json({ message: 'wrong password' });
+    }
+  }
+});
 
 app.post('/compile', async (req, res) => {
   const code = req.body.code;
