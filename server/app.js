@@ -78,7 +78,7 @@ app.post('/login', async (req, res) => {
         },
         SECRET_KEY,
         {
-          expiresIn: '15m',
+          expiresIn: '60m',
         }
       );
 
