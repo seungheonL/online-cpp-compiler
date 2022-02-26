@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-const CodeEditor = ({ setResult }) => {
-  const [code, setCode] = useState('');
+const CodeEditor = ({ setResult, code, setCode, user, setContents }) => {
+  const [fileName, setFileName] = useState('');
 
   const HandleCodeSubmit = async (event) => {
     event.preventDefault();
@@ -36,7 +36,7 @@ const CodeEditor = ({ setResult }) => {
           <textarea
             spellCheck="false"
             style={{
-              width: '300%',
+              width: '160%',
               backgroundColor: '#212121',
               color: '#A4A4A4',
               fontFamily: 'consolas',
@@ -51,6 +51,51 @@ const CodeEditor = ({ setResult }) => {
         <div className="form-group">
           <button className="btn btn-primary" type="submit">
             compile
+          </button>
+          <input
+            placeholder="Enter your file name"
+            value={fileName}
+            style={{
+              marginLeft: '450px',
+            }}
+            type="text"
+            onChange={(event) => {
+              setFileName(event.target.value);
+            }}
+          ></input>
+          <button
+            onClick={async (event) => {
+              event.preventDefault();
+
+              const res = await fetch('http://localhost:8080/save', {
+                method: 'POST',
+                body: JSON.stringify({
+                  fileName,
+                  code,
+                  user,
+                }),
+                headers: {
+                  'Content-type': 'application/json',
+                },
+              });
+
+              const data = await res.json();
+              console.log(data);
+
+              setContents((prev) => [
+                ...prev,
+                {
+                  name: fileName,
+                  content: code,
+                },
+              ]);
+            }}
+            style={{
+              marginLeft: '10px',
+            }}
+            className="btn btn-primary"
+          >
+            save
           </button>
         </div>
       </form>

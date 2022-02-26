@@ -1,48 +1,58 @@
 import React, { useState } from 'react';
-import { useHistory, Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
-const SignInForm = ({ setIsLoggedIn, setUser }) => {
+const SignUpForm = ({ setIsLoggedIn }) => {
   const history = useHistory();
 
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [password1, setPassword1] = useState('');
+  const [password2, setPassword2] = useState('');
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
   };
 
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
+  const handlePassword1Change = (event) => {
+    setPassword1(event.target.value);
+  };
+
+  const handlePassword2Change = (event) => {
+    setPassword2(event.target.value);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const res = await fetch('http://localhost:8080/login', {
+    if (password1 != password2) {
+      alert('Check password again');
+      return;
+    }
+
+    const res = await fetch('http://localhost:8080/signup', {
       method: 'POST',
       body: JSON.stringify({
         email,
-        password,
+        password1,
       }),
       headers: {
         'Content-type': 'application/json',
       },
     });
 
-    const { token, userEmail } = await res.json();
+    const data = await res.json();
 
-    if (token) {
-      console.log(userEmail);
-      localStorage.setItem('login-token', token);
-      setUser({ email: userEmail });
-      setIsLoggedIn(true);
-    } else {
-      alert('incorret email or password');
+    if (data.message == 'existing email') {
+      alert('This email already exists');
+      return;
+    } else if (data.message == 'success') {
+      alert('New account has been created');
+      // setIsLoggedIn(true);
+      history.push('/');
     }
-  };
 
-  const handleSignUpClick = (event) => {
-    history.push('/signup');
+    console.log(data);
+
+    //history.push('/');
   };
 
   return (
@@ -88,8 +98,23 @@ const SignInForm = ({ setIsLoggedIn, setUser }) => {
         <div className="form-group">
           <label htmlFor="exampleInputPassword1">Password</label>
           <input
-            onChange={handlePasswordChange}
-            value={password}
+            onChange={handlePassword1Change}
+            value={password1}
+            style={{
+              width: '20%',
+              margin: '0 auto',
+            }}
+            type="password"
+            className="form-control"
+            id="exampleInputPassword1"
+            placeholder="Password"
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="exampleInputPassword1">Confirm Password</label>
+          <input
+            onChange={handlePassword2Change}
+            value={password2}
             style={{
               width: '20%',
               margin: '0 auto',
@@ -107,15 +132,11 @@ const SignInForm = ({ setIsLoggedIn, setUser }) => {
             marginTop: '10px',
           }}
         >
-          Login
-        </button>
-        <p></p>
-        <button onClick={handleSignUpClick} className="btn btn-primary">
-          Sign Up
+          Submit
         </button>
       </form>
     </>
   );
 };
 
-export default SignInForm;
+export default SignUpForm;

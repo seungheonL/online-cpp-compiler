@@ -52,9 +52,89 @@ let users = [
   },
 ];
 
+let codes = [
+  {
+    writer: '1234@naver.com',
+    contents: [
+      {
+        name: 'helloworld.cpp',
+        content: `#include <iostream>
+
+        int main() {
+          std::cout << "Hello, World!!" << std::endl;
+          return 0;
+        }`,
+      },
+      {
+        name: 'class.cpp',
+        content: `#include <iostream>
+        #include <string>
+        
+        class Base {
+          std::string s;
+        
+         public:
+          Base() : s("기반") { std::cout << "기반 클래스" << std::endl; }
+        
+          void what() { std::cout << s << std::endl; }
+        };
+        class Derived : public Base {
+          std::string s;
+        
+         public:
+          Derived() : s("파생"), Base() { std::cout << "파생 클래스" << std::endl; }
+        
+          void what() { std::cout << s << std::endl; }
+        };
+        int main() {
+          Base p;
+          Derived c;
+        
+          std::cout << "=== 포인터 버전 ===" << std::endl;
+          Base* p_c = &c;
+          p_c->what();
+        
+          return 0;
+        }`,
+      },
+    ],
+  },
+];
+
+app.post('/save', (req, res) => {
+  const { fileName, code, user } = req.body;
+
+  const found = codes.find((code) => code.writer == user.email);
+
+  if (found) {
+    found.contents.push({
+      name: fileName,
+      content: code,
+    });
+  } else {
+    codes.push({
+      writer: user.email,
+      contents: [{ name: fileName, content: code }],
+    });
+  }
+
+  res.json({ message: 'success' });
+});
+
+app.post('/codes', (req, res) => {
+  const { token } = req.body;
+  console.log(token);
+
+  const decoded = jwt.verify(token, SECRET_KEY);
+  console.log(decoded);
+
+  const { contents } = codes.find((code) => code.writer == decoded.email);
+
+  res.json(contents);
+});
+
 app.get('/auth', (req, res) => {
   const token = req.header('Authorization');
-  console.log(token);
 
   try {
     const decoded = jwt.verify(token, SECRET_KEY);
@@ -62,21 +142,26 @@ app.get('/auth', (req, res) => {
   } catch {
     res.json({ message: 'invalid token' });
   }
+});
 
-  // if (decoded) {
-  //   res.json({ email: decoded.email });
-  // } else {
-  //   res.json({ message: 'invalid token' });
-  // }
+app.post('/signup', async (req, res) => {
+  const { email, password1 } = req.body;
+
+  const saltRounds = 10;
+  const encrypted = await bcrypt.hash(password1, saltRounds);
+
+  const user = users.find((user) => user.email == email);
+
+  if (user) {
+    res.json({ message: 'existing email' });
+  } else {
+    users.push({ email, password: encrypted });
+    res.json({ message: 'success' });
+  }
 });
 
 app.post('/login', async (req, res) => {
-  const email = req.body.email;
-  const password = req.body.password;
-
-  // 회원가입 할때 사용
-  // const saltRounds = 10;
-  // const encrypted = await bcrypt.hash(password, saltRounds);
+  const { email, password } = req.body;
 
   const user = users.find((user) => user.email == email);
 
