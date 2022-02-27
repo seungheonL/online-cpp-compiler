@@ -32,7 +32,6 @@ const SignInForm = ({ setIsLoggedIn, setUser }) => {
     const { token, userEmail } = await res.json();
 
     if (token) {
-      console.log(userEmail);
       localStorage.setItem('login-token', token);
       setUser({ email: userEmail });
       setIsLoggedIn(true);

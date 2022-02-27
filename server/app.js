@@ -76,10 +76,8 @@ app.post('/save', (req, res) => {
 
 app.post('/codes', (req, res) => {
   const { token } = req.body;
-  console.log(token);
 
   const decoded = jwt.verify(token, SECRET_KEY);
-  console.log(decoded);
 
   const { contents } = codes.find((code) => code.writer == decoded.email);
 
@@ -119,14 +117,11 @@ app.post('/login', async (req, res) => {
   const user = users.find((user) => user.email == email);
 
   if (!user) {
-    console.log('wrong email');
     res.json({ message: 'wrong email' });
   } else {
     const found = await bcrypt.compare(password, user.password);
 
     if (found) {
-      console.log('login success');
-
       const token = jwt.sign(
         {
           type: 'JWT',
@@ -139,16 +134,10 @@ app.post('/login', async (req, res) => {
         }
       );
 
-      console.log(token);
-
       const decoded = jwt.verify(token, SECRET_KEY);
-      console.log(decoded);
-
-      console.log(decoded.email);
 
       res.json({ token, userEmail: decoded.email });
     } else {
-      console.log('wrong password');
       res.json({ message: 'wrong password' });
     }
   }
@@ -159,7 +148,6 @@ app.post('/compile', async (req, res) => {
 
   await fsPromises.writeFile('main.cpp', code, (err) => {
     if (err) {
-      console.log(err);
     }
   });
 

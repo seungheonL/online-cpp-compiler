@@ -46,13 +46,8 @@ const SignUpForm = ({ setIsLoggedIn }) => {
       return;
     } else if (data.message == 'success') {
       alert('New account has been created');
-      // setIsLoggedIn(true);
       history.push('/');
     }
-
-    console.log(data);
-
-    //history.push('/');
   };
 
   return (

@@ -80,7 +80,6 @@ const CodeEditor = ({ setResult, code, setCode, user, setContents }) => {
               });
 
               const data = await res.json();
-              console.log(data);
 
               setContents((prev) => [
                 ...prev,

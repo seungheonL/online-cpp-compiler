@@ -8,8 +8,6 @@ const Home = ({ user, setUser, setIsLoggedIn }) => {
   const [result, setResult] = useState('');
   const [code, setCode] = useState('');
 
-  console.log(contents);
-
   useEffect(() => {
     fetch('http://localhost:8080/codes', {
       method: 'POST',
@@ -23,7 +21,6 @@ const Home = ({ user, setUser, setIsLoggedIn }) => {
       .then((res) => res.json())
       .then((datas) => {
         datas.forEach((data) => {
-          console.log(data);
           setContents((prev) => [...prev, data]);
         });
       });
@@ -43,10 +40,22 @@ const Home = ({ user, setUser, setIsLoggedIn }) => {
         }}
       >
         <div className="col">
-          <h2>source code</h2>
+          <h2
+            style={{
+              fontFamily: 'Shippori Antique B1',
+            }}
+          >
+            source code
+          </h2>
         </div>
         <div className="col">
-          <h2>result</h2>
+          <h2
+            style={{
+              fontFamily: 'Shippori Antique B1',
+            }}
+          >
+            result
+          </h2>
         </div>
       </div>
       <div className="row">
@@ -79,15 +88,7 @@ const Home = ({ user, setUser, setIsLoggedIn }) => {
             ))}
           </ul>
         </div>
-        <div
-          className="col-4"
-          style={
-            {
-              //float: 'none',
-              //margin: '0 auto',
-            }
-          }
-        >
+        <div className="col-4">
           <CodeEditor
             setContents={setContents}
             user={user}
@@ -99,8 +100,6 @@ const Home = ({ user, setUser, setIsLoggedIn }) => {
         <div
           className="col-4"
           style={{
-            //float: 'none',
-            //margin: '0 auto',
             marginTop: '15px',
           }}
         >

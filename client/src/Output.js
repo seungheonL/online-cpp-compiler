@@ -11,12 +11,11 @@ const Output = ({ result, setUser, setIsLoggedIn }) => {
         spellCheck="false"
         rows="40"
         style={{
-          // width: '180%',
           backgroundColor: '#212121',
           color: '#A4A4A4',
           fontFamily: 'consolas',
           marginBottom: '15px',
-          //marginTop: '15px',
+
           marginLeft: '500px',
         }}
         className="form-control"
