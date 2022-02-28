@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Switch, Link, Route } from 'react-router-dom';
-import axios from 'axios';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Home from './Home';
 import SignInForm from './SignInForm';
 import SignUpForm from './SignUpForm';

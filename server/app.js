@@ -167,7 +167,7 @@ app.post('/compile', async (req, res) => {
 
   createExeFile()
     .then(() => {
-      execFile('./a.exe', (err, data) => {
+      execFile('./a.out', (err, data) => {
         exec('rm main.cpp');
         exec('rm a.exe');
 
