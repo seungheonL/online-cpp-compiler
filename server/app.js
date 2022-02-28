@@ -57,21 +57,35 @@ let codes = [];
 app.post('/save', (req, res) => {
   const { fileName, code, user } = req.body;
 
-  const found = codes.find((code) => code.writer == user.email);
+  let foundCode = codes.find((code) => code.writer == user.email);
 
-  if (found) {
-    found.contents.push({
-      name: fileName,
-      content: code,
-    });
+  if (foundCode) {
+    const foundContent = foundCode.contents.find(
+      (content) => content.name == fileName
+    );
+
+    if (foundContent) {
+      foundContent.content = code;
+      console.log(codes);
+    } else {
+      foundCode.contents.push({
+        name: fileName,
+        content: code,
+      });
+    }
   } else {
+    foundCode = {
+      writer: user.email,
+      contents: [{ name: fileName, content: code }],
+    };
+
     codes.push({
       writer: user.email,
       contents: [{ name: fileName, content: code }],
     });
   }
 
-  res.json({ message: 'success' });
+  res.json(foundCode);
 });
 
 app.post('/codes', (req, res) => {

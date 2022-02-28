@@ -9,16 +9,8 @@ const Title = ({ user }) => (
         fontSize: '50px',
       }}
     >
-      Welcome to online C/C++ compiler,
+      Welcome to online C/C++ compiler, {`${user.email}!`}
     </h1>
-    <h2
-      style={{
-        textAlign: 'center',
-        marginBottom: '30px',
-        marginTop: '30px',
-        fontFamily: 'Poppins',
-      }}
-    >{`${user.email}!`}</h2>
   </>
 );
 

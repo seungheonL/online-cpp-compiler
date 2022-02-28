@@ -56,7 +56,7 @@ const CodeEditor = ({ setResult, code, setCode, user, setContents }) => {
             placeholder="Enter your file name"
             value={fileName}
             style={{
-              marginLeft: '450px',
+              marginLeft: '400px',
             }}
             type="text"
             onChange={(event) => {
@@ -81,13 +81,14 @@ const CodeEditor = ({ setResult, code, setCode, user, setContents }) => {
 
               const data = await res.json();
 
-              setContents((prev) => [
-                ...prev,
-                {
-                  name: fileName,
-                  content: code,
-                },
-              ]);
+              setContents(
+                data.contents.map((content) => {
+                  return {
+                    name: content.name,
+                    content: content.content,
+                  };
+                })
+              );
             }}
             style={{
               marginLeft: '10px',
