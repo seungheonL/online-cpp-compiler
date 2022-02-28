@@ -11,3 +11,7 @@ cd client
 docker build . -t occ-client
 docker run -p 3000:3000 -d occ-client
 ```
+
+```
+Type http://localhost:3000/ in the URL bar of your browser
+```
