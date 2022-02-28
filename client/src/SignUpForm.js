@@ -23,7 +23,7 @@ const SignUpForm = ({ setIsLoggedIn }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (password1 != password2) {
+    if (password1 !== password2) {
       alert('Check password again');
       return;
     }
@@ -41,10 +41,10 @@ const SignUpForm = ({ setIsLoggedIn }) => {
 
     const data = await res.json();
 
-    if (data.message == 'existing email') {
+    if (data.message === 'existing email') {
       alert('This email already exists');
       return;
-    } else if (data.message == 'success') {
+    } else if (data.message === 'success') {
       alert('New account has been created');
       history.push('/');
     }

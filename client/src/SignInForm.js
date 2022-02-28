@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory, Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 const SignInForm = ({ setIsLoggedIn, setUser }) => {
   const history = useHistory();

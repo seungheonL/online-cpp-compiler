@@ -74,7 +74,7 @@ const Home = ({ user, setUser, setIsLoggedIn }) => {
                   const name = event.currentTarget.getAttribute('id');
 
                   setCode(
-                    contents.find((content) => content.name == name).content
+                    contents.find((content) => content.name === name).content
                   );
                 }}
                 style={{
