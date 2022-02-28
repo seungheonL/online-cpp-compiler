@@ -10,4 +10,5 @@ RUN npm install
 COPY . /app/client
 
 EXPOSE 3000
+
 CMD [ "npm", "start" ]
