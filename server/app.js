@@ -10,6 +10,9 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 dotenv.config();
 
+import { MongoClient, ServerApiVersion } from 'mongodb';
+import mongoose from 'mongoose';
+
 const SECRET_KEY = process.env.SECRET_KEY;
 
 const app = express();
@@ -41,16 +44,21 @@ const createExeFile = () => {
   });
 };
 
-let users = [
-  {
-    email: '1234@naver.com',
-    password: '$2b$10$0l5srYUyerNIQp74OVUgGOEodLzuy8YQfDH9JN68N5rceZ6ijxDEa', //1234를 hash한 결과
-  },
-  {
-    email: '5678@naver.com',
-    password: '$2b$10$2L/F3KYN6PGCTrIuKbzWmOVHUHFz.NxAOIn2cyfu0aojyVTTxQFcm', //5678을 hash한 결과
-  },
-];
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.qq1ux.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+
+mongoose.connect(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverApi: ServerApiVersion.v1,
+  dbName: 'online-cpp-compiler',
+});
+
+const UserSchema = mongoose.Schema({
+  email: String,
+  password: String,
+});
+
+const User = mongoose.model('users', UserSchema);
 
 let codes = [];
 
@@ -93,9 +101,13 @@ app.post('/codes', (req, res) => {
 
   const decoded = jwt.verify(token, SECRET_KEY);
 
-  const { contents } = codes.find((code) => code.writer == decoded.email);
+  const foundCode = codes.find((code) => code.writer == decoded.email);
 
-  res.json(contents);
+  if (foundCode) {
+    res.json(foundCode.contents);
+  } else {
+    res.json({});
+  }
 });
 
 app.get('/auth', (req, res) => {
@@ -115,46 +127,58 @@ app.post('/signup', async (req, res) => {
   const saltRounds = 10;
   const encrypted = await bcrypt.hash(password1, saltRounds);
 
-  const user = users.find((user) => user.email == email);
-
-  if (user) {
-    res.json({ message: 'existing email' });
-  } else {
-    users.push({ email, password: encrypted });
-    res.json({ message: 'success' });
-  }
+  User.findOne(
+    {
+      email,
+    },
+    (err, user) => {
+      if (user) {
+        res.json({ message: 'existing email' });
+      } else {
+        const newUser = new User({ email, password: encrypted });
+        newUser.save().then(() => {
+          res.json({ message: 'success' });
+        });
+      }
+    }
+  );
 });
 
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
-  const user = users.find((user) => user.email == email);
+  User.findOne(
+    {
+      email,
+    },
+    async (err, user) => {
+      if (!user) {
+        res.json({ message: 'wrong email' });
+      } else {
+        const found = await bcrypt.compare(password, user.password);
 
-  if (!user) {
-    res.json({ message: 'wrong email' });
-  } else {
-    const found = await bcrypt.compare(password, user.password);
+        if (found) {
+          const token = jwt.sign(
+            {
+              type: 'JWT',
+              email: user.email,
+              createdAt: new Date(),
+            },
+            SECRET_KEY,
+            {
+              expiresIn: '60m',
+            }
+          );
 
-    if (found) {
-      const token = jwt.sign(
-        {
-          type: 'JWT',
-          email: user.email,
-          createdAt: new Date(),
-        },
-        SECRET_KEY,
-        {
-          expiresIn: '60m',
+          const decoded = jwt.verify(token, SECRET_KEY);
+
+          res.json({ token, userEmail: decoded.email });
+        } else {
+          res.json({ message: 'wrong password' });
         }
-      );
-
-      const decoded = jwt.verify(token, SECRET_KEY);
-
-      res.json({ token, userEmail: decoded.email });
-    } else {
-      res.json({ message: 'wrong password' });
+      }
     }
-  }
+  );
 });
 
 app.post('/compile', async (req, res) => {
